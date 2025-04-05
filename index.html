@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOVESZYNK</title>
+<link rel="icon" href="favicon.png" type="png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+  
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .slide-nav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #1E1E1E;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      z-index: 2000;
+    }
+
+    .slide-nav a {
+      padding: 10px 20px;
+      text-decoration: none;
+      font-size: 20px;
+      color: white;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+      border-radius: 8px;
+      margin: 10px 0;
+      background-color: #4B4B4B; /* Background color for the boxes */
+    }
+
+    .slide-nav a:hover {
+      background-color: #575757;
+      border-color: lightcoral; /* Light red outline */
+    }
+
+    .closebtn {
+      position: absolute;
+      top: 10px; /* Adjusted to be closer to the top */
+      right: 10px; /* Adjusted to be closer to the right */
+      font-size: 24px;
+      color: white;
+      background-color: #e74c3c; /* Red background for close button */
+      border: none;
+      border-radius: 8px; /* Rounded corners */
+      width: 40px; /* Width of the button */
+      height: 40px; /* Height of the button */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Optional shadow for depth */
+    }
+
+    .closebtn:hover {
+      background-color: #c0392b; /* Darker red on hover */
+    }
+
+    .navbar {
+      background: #424242;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .menu-icon {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .search-container {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-box {
+      display: flex;
+      background: #222;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid lightcoral; /* Light red outline */
+    }
+
+    .search-box input {
+      border: none;
+      padding: 8px 12px;
+      background: transparent;
+      color: white;
+      width: 200px;
+    }
+
+    .search-box button {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .main {
+      padding: 100px 20px 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .welcome-section h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #C49D00;
+    }
+
+    .welcome-section p {
+      font-size: 16px;
+      color: #ccc;
+    }
+
+    .video-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .video-box {
+      flex: 1 1 calc(50% - 20px);
+      background: #111;
+      padding: 10px;
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+      border: 2px solid transparent; /* Light red border */
+      transition: border-color 0.3s ease;
+    }
+
+    .video-box:hover {
+      border-color: lightcoral; /* Light red outline on hover */
+    }
+
+    .video-box:active {
+      border-color: lightgrey; /* Light white border on click */
+    }
+
+    .video-thumbnail {
+      height: 200px;
+      border-radius: 8px;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .video-thumbnail::after {
+      content: "\f04b";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 50px;
+      color: rgba(255, 255, 255, 0.8);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .video-title {
+      margin-top: 10px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .video-info {
+      font-size: 14px;
+      color: #ccc;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .video-views,
+    .video-uploaded {
+      display: inline-block;
+      margin: 5px 0;
+    }
+
+    .video-views span,
+    .video-uploaded span {
+      color: lightgreen;
+    }
+
+    .warning {
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #e74c3c;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 0 0 10px 10px;
+      font-weight: bold;
+      transition: top 0.5s ease;
+      z-index: 3000;
+    }
+
+    .warning.show {
+      top: 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      .video-box {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Slide Nav -->
+<div id="mySidenav" class="slide-nav">
+  <!-- Logo Section -->
+  <div style="display: flex; align-items: center; padding: 10px 20px; color: white; font-size: 22px; font-weight: bold;">
+    <i class="fas fa-film" style="margin-right: 10px; color: gold;"></i>
+    MoveSzynk
+  </div>
+  
+  <button class="closebtn" onclick="closeNav()">&times;</button>
+  <a href="indexabout.html" class="nav-link"><i class="fas fa-info-circle" style="margin-right: 10px;"></i>About</a>
+  <a href="indexlogin.html" class="nav-link"><i class="fas fa-sign-in-alt" style="margin-right: 10px;"></i>Login</a>
+  <a href="http://127.0.0.1:8596" class="nav-link"><i class="fab fa-facebook" style="margin-right: 10px;"></i>Facebook</a>
+</div>
+
+<!-- Navbar -->
+<div class="navbar">
+  <span class="menu-icon" onclick="openNav()"><i class="fas fa-bars"></i></span>
+<div class="logo" style="margin-left: 0.5em; color: #ffcc00;">MoveSzynk</div>
+  <div class="search-container">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search videos..." oninput="searchVideo()">
+      <button onclick="searchVideo()"><i class="fas fa-search"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- Warning Message -->
+<div id="warningMsg" class="warning">Please login first</div>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <h1>Welcome to MoveSzynk</h1>
+    <p>Enjoy streaming your favorite videos in one sleek, modern platform.</p>
+  </div>
+
+
+
+
+
+
+
+  <!-- Video Grid -->
+  <div class="video-grid" id="videoGrid">
+    <div class="video-box" onclick="showLoginWarning()">
+      <div class="video-thumbnail" style="background-image: url('images1.jpeg');"></div>
+      <div class="video-title">A Minecraft Movie (coming soon)</div>
+      <div class="video-info">
+        <div class="video-views">Jared Hess•10 views</div>
+        <div class="video-uploaded">•1 months ago...</div>
+      </div>
+    </div>
+
+    <div class="video-box" onclick="showLoginWarning()">
+      <div class="video-thumbnail" style="background-image: url('images2.jpeg');"></div>
+      <div class="video-title">Sonic the Hedgehog 3</div>
+      <div class="video-info">
+        <div class="video-views">Jeff Fowler•850K views</div>
+        <div class="video-uploaded">•8 months ago...</div>
+      </div>
+    </div>
+
+    <div class="video-box" onclick="showLoginWarning()">
+      <div class="video-thumbnail" style="background-image: url('images3.jpeg');"></div>
+      <div class="video-title">Snow White</div>
+      <div class="video-info">
+        <div class="video-views">Marc Webb•3.1M views</div>
+        <div class="video-uploaded">•12 months ago...</div>
+      </div>
+    </div>
+
+    <div class="video-box" onclick="showLoginWarning()">
+      <div class="video-thumbnail" style="background-image: url('images4.jpeg');"></div>
+      <div class="video-title">Captain America: Brave New World</div>
+      <div class="video-info">
+        <div class="video-views">Julius Onah•700K views</div>
+        <div class="video-uploaded">•6 months ago...</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- I-include ang Font Awesome sa <head> ng iyong HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Credits Section -->
+<footer style="background-color: #1a1a1a; color: #f2f2f2; text-align: center; padding: 40px 20px; font-size: 14px; line-height: 1.6;">
+  <h2 style="color: goldenrod; font-size: 36px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">
+    MOVESZYNK
+  </h2>
+  <h3 style="color: white; font-size: 18px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
+    Studios
+  </h3>
+  <p>Developed by: MoveSzynk Web Technologies</p>
+  <p>Creative Director: Daniel Everett</p>
+  <p>Lead Developer: Jonathan Carter</p>
+  <p>UI/UX Designer: Sophia Mitchell</p>
+  <p>Backend Engineer: Michael Reynolds</p>
+  <p>Graphics & Animation: Emma Harrison</p>
+  <p>Marketing & Outreach: Lucas Patel</p>
+  <p>Special Thanks to: Our Supporters & Beta Testers</p>
+  
+  <hr style="border-color: #444; margin: 20px 0;">
+  
+  <p style="color: #bbb; font-size: 12px;">© 2025 MoveSzynk. All Rights Reserved.</p>
+  
+  <div style="margin-top: 15px;">
+    <a href="#" style="color: #bbb; text-decoration: none; font-size: 12px; margin: 0 10px;">Privacy & Legal</a> |
+    <a href="#" style="color: #bbb; text-decoration: none; font-size: 12px; margin: 0 10px;">Accessibility</a> |
+    <a href="#" style="color: #bbb; text-decoration: none; font-size: 12px; margin: 0 10px;">Manage Cookies</a>
+  </div>
+  
+  <!-- Social Media Icons -->
+  <div style="margin-top: 20px; font-size: 24px;">
+    <a href="https://www.youtube.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.facebook.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.twitter.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.linkedin.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://www.pinterest.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.snapchat.com" style="color: #f2f2f2; margin: 0 10px;" aria-label="Snapchat"><i class="fab fa-snapchat-ghost"></i></a>
+  </div>
+</footer>
+
+<script>
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+  }
+
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+
+  function searchVideo() {
+    var input = document.getElementById("searchInput").value.toLowerCase();
+    var videoBoxes = document.querySelectorAll(".video-box");
+    
+    videoBoxes.forEach(function(videoBox) {
+      var title = videoBox.querySelector(".video-title").textContent.toLowerCase();
+      if (title.includes(input)) {
+        videoBox.style.display = ""; // Show the video box
+      } else {
+        videoBox.style.display = "none"; // Hide the video box
+      }
+    });
+  }
+
+  function showLoginWarning() {
+    var warning = document.getElementById("warningMsg");
+    warning.classList.add("show");
+
+    // Hide the warning after 3 seconds
+    setTimeout(function () {
+      warning.classList.remove("show");
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
